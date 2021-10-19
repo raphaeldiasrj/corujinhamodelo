@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using CorujinhaModelo.Dominio;
+using CorujinhaModelo.Dominio.Repositorios;
 
 namespace CorujinhaModelo.Repositorio
 {
-    public class IngredienteRepositorio
+    public class IngredienteRepositorio : IIngredienteRepositorio
     {
         private readonly IList<Ingrediente> _lista;
 

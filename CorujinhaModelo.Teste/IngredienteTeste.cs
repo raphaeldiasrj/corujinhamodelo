@@ -1,13 +1,25 @@
 using System;
 using System.Collections.Generic;
 using CorujinhaModelo.Dominio;
+using CorujinhaModelo.Dominio.Repositorios;
 using CorujinhaModelo.Repositorio;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace CorujinhaModelo.Teste
 {
     public class IngredienteTeste
     {
+        private readonly ServiceProvider _serviceProvider;
+        public IngredienteTeste()
+        {
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddTransient<IIngredienteRepositorio, IngredienteRepositorio>();
+            serviceCollection.AddTransient<IIngredienteDominio, IngredienteDominio>();
+
+            _serviceProvider = serviceCollection.BuildServiceProvider();
+        }
+
         [Fact]
         public void Deve_cadastrar_ingrediente_com_sucesso()
         {
@@ -32,10 +44,10 @@ namespace CorujinhaModelo.Teste
                 Nome = "Leite fermentado"
             };
 
-            var repositorio = new IngredienteRepositorio();
-            repositorio.Inserir(ingrediente);
+            var dominio = _serviceProvider.GetService<IIngredienteDominio>();
+            dominio.Criar(ingrediente);
 
-            Assert.Single(repositorio.ObterTodos());
+            Assert.Single(dominio.ObterTodos());
         }
 
         [Fact]
@@ -45,13 +57,13 @@ namespace CorujinhaModelo.Teste
             var ingrediente2 = new Ingrediente();
             var ingrediente3 = new Ingrediente();
 
-            var repositorio = new IngredienteRepositorio();
-            repositorio.Inserir(ingrediente1);
-            repositorio.Inserir(ingrediente2);
-            repositorio.Inserir(ingrediente3);
+            var dominio = _serviceProvider.GetService<IIngredienteDominio>();
+            dominio.Criar(ingrediente1);
+            dominio.Criar(ingrediente2);
+            dominio.Criar(ingrediente3);
 
 
-            var lista = repositorio.ObterTodos();
+            var lista = dominio.ObterTodos();
 
             Assert.Equal(3, lista.Count);
         }
